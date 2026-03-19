@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -7,12 +8,12 @@ import 'topbar.dart';
 import '../utils/breakpoints.dart';
 import '../features/dashboard/pages/dashboard_page.dart';
 import '../features/health_certificates/pages/health_certificates_page.dart';
+import '../features/inventory/pages/inventory_page.dart';
 import '../features/patients/pages/patients_page.dart';
 import '../features/referrals/pages/referrals_page.dart';
+import '../features/reports/pages/reports_page.dart';
+import '../features/settings/pages/settings_page.dart';
 import '../features/visits/pages/visits_page.dart';
-import '../pages/inventory/inventory_page.dart';
-import '../pages/reports/reports_page.dart';
-import '../pages/settings/settings_page.dart';
 import '../models/user_profile.dart';
 
 /// App shell: left sidebar + top bar + main content + optional right details drawer.
@@ -35,6 +36,7 @@ class _AppShellState extends State<AppShell> {
   SyncStatus _syncStatus = SyncStatus.syncing;
   Timer? _connectivityTimer;
   String _userRole = 'STAFF';
+  String _appVersion = '';
 
   Widget? _detailsDrawer;
 
@@ -43,6 +45,7 @@ class _AppShellState extends State<AppShell> {
     super.initState();
     _userRole = (widget.profile.role.isNotEmpty ? widget.profile.role : 'STAFF').toUpperCase();
     _startConnectivityMonitor();
+    _loadAppVersion();
   }
 
   @override
@@ -79,6 +82,48 @@ class _AppShellState extends State<AppShell> {
     } catch (_) {
       return false;
     }
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final pubspecVersion = await _readVersionFromPubspec();
+      if (pubspecVersion != null && pubspecVersion.isNotEmpty) {
+        if (!mounted) return;
+        setState(() => _appVersion = pubspecVersion);
+        return;
+      }
+
+      const buildName = String.fromEnvironment('FLUTTER_BUILD_NAME');
+      if (buildName.isNotEmpty) {
+        if (!mounted) return;
+        setState(() => _appVersion = buildName.split('+').first);
+        return;
+      }
+
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() => _appVersion = info.version.split('+').first);
+    } catch (_) {
+      // Keep default blank version if package info fails.
+    }
+  }
+
+  Future<String?> _readVersionFromPubspec() async {
+    try {
+      final file = File('pubspec.yaml');
+      if (!await file.exists()) return null;
+      final lines = await file.readAsLines();
+      for (final raw in lines) {
+        final line = raw.trim();
+        if (!line.startsWith('version:')) continue;
+        final value = line.substring('version:'.length).trim();
+        if (value.isEmpty) return null;
+        return value.split('+').first;
+      }
+    } catch (_) {
+      return null;
+    }
+    return null;
   }
 
   /// Builds only the active page so layout and semantics run for one page at a time.
@@ -137,6 +182,7 @@ class _AppShellState extends State<AppShell> {
               if (isTabletOrSmaller) return;
               setState(() => _sidebarCollapsed = !_sidebarCollapsed);
             },
+            versionLabel: _appVersion.isEmpty ? '' : 'UNOclinic v$_appVersion',
           ),
           Expanded(
             child: ClipRect(

@@ -138,9 +138,9 @@ class _InventoryPageState extends State<InventoryPage> with SingleTickerProvider
       cellBuilder: (row, key) {
         switch (key) {
           case 'name':
-            return Text(row.name ?? '—');
+            return Text(row.name ?? '-');
           case 'category':
-            return Text(row.category ?? '—');
+            return Text(row.category ?? '-');
           case 'totalStock':
             return Text('${row.totalStock ?? 0}');
           case 'threshold':
@@ -176,13 +176,13 @@ class _InventoryPageState extends State<InventoryPage> with SingleTickerProvider
           case 'itemName':
             return Text(row.itemName ?? 'Unknown');
           case 'batchNo':
-            return Text(row.batchNo ?? '—');
+            return Text(row.batchNo ?? '-');
           case 'expiryDate':
             return Text(Formatters.date(row.expiryDate));
           case 'qty':
             return Text('${row.qtyAvailable ?? 0}');
           case 'status':
-            return Text(row.status ?? '—');
+            return Text(row.status ?? '-');
           default:
             return const SizedBox.shrink();
         }
@@ -216,11 +216,11 @@ class _InventoryPageState extends State<InventoryPage> with SingleTickerProvider
           case 'itemName':
             return Text(row.itemName ?? 'Unknown');
           case 'type':
-            return Text(row.type ?? '—');
+            return Text(row.type ?? '-');
           case 'qty':
             return Text('${row.qty ?? 0}');
           case 'notes':
-            return Text(row.notes ?? '—');
+            return Text(row.notes ?? '-');
           default:
             return const SizedBox.shrink();
         }
@@ -267,7 +267,7 @@ class _InventoryPageState extends State<InventoryPage> with SingleTickerProvider
           const SizedBox(height: 8),
           ...nearExpiry.map((b) => ListTile(
                 title: Text(b.itemName ?? 'Unknown'),
-                subtitle: Text('${b.batchNo ?? '—'} — ${Formatters.date(b.expiryDate)}'),
+                subtitle: Text('${b.batchNo ?? '-'} - ${Formatters.date(b.expiryDate)}'),
                 onTap: () => widget.onOpenDrawer(
                   BatchDrawer(batch: b, onClose: () => widget.onOpenDrawer(null)),
                 ),
@@ -279,7 +279,7 @@ class _InventoryPageState extends State<InventoryPage> with SingleTickerProvider
           const SizedBox(height: 8),
           ...expired.map((b) => ListTile(
                 title: Text(b.itemName ?? 'Unknown'),
-                subtitle: Text('${b.batchNo ?? '—'} — ${Formatters.date(b.expiryDate)}'),
+                subtitle: Text('${b.batchNo ?? '-'} - ${Formatters.date(b.expiryDate)}'),
                 onTap: () => widget.onOpenDrawer(
                   BatchDrawer(batch: b, onClose: () => widget.onOpenDrawer(null)),
                 ),

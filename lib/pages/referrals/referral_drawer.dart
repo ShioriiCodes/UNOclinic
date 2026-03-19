@@ -12,12 +12,14 @@ class ReferralDrawer extends StatefulWidget {
     required this.onClose,
     this.onMarkCompleted,
     this.onSaveNotes,
+    this.onDelete,
   });
 
   final Referral referral;
   final VoidCallback onClose;
   final Future<void> Function()? onMarkCompleted;
   final Future<void> Function(String notes)? onSaveNotes;
+  final Future<void> Function()? onDelete;
 
   @override
   State<ReferralDrawer> createState() => _ReferralDrawerState();
@@ -41,9 +43,18 @@ class _ReferralDrawerState extends State<ReferralDrawer> {
   @override
   Widget build(BuildContext context) {
     return DetailsDrawer(
-      title: 'Referral — ${widget.referral.patientName ?? 'Unknown'}',
+      title: 'Referral - ${widget.referral.patientName ?? 'Unknown'}',
       onClose: widget.onClose,
       actions: [
+        OutlinedButton.icon(
+          onPressed: widget.onDelete == null
+              ? null
+              : () async {
+                  await widget.onDelete!();
+                },
+          icon: const Icon(Icons.delete_outline_rounded, size: 18),
+          label: const Text('Delete'),
+        ),
         OutlinedButton.icon(
           onPressed: widget.onSaveNotes == null
               ? null
@@ -69,9 +80,9 @@ class _ReferralDrawerState extends State<ReferralDrawer> {
         children: [
           _row('Referral date', Formatters.date(widget.referral.referralDate)),
           _row('Patient', widget.referral.patientName ?? 'Unknown'),
-          _row('Referred to', widget.referral.referredTo ?? '—'),
-          _row('Reason', widget.referral.reason ?? '—'),
-          _row('Follow-up due', widget.referral.followUpDue ?? '—'),
+          _row('Referred to', widget.referral.referredTo ?? '-'),
+          _row('Reason', widget.referral.reason ?? '-'),
+          _row('Follow-up due', widget.referral.followUpDue ?? '-'),
           _row('Status', widget.referral.status ?? 'Pending'),
           const SizedBox(height: 16),
           const Text('Follow-up notes', style: TextStyle(fontWeight: FontWeight.w600)),

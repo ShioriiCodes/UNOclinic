@@ -23,7 +23,7 @@ class VisitDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsDrawer(
-      title: 'Visit — ${visit.patientName ?? '—'}',
+      title: 'Visit - ${visit.patientName ?? '-'}',
       onClose: onClose,
       actions: [
         OutlinedButton.icon(
@@ -40,9 +40,9 @@ class VisitDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _row('Date & Time', visit.visitDate != null ? Formatters.dateTime(visit.visitDate) : '—'),
-          _row('Patient', visit.patientName ?? '—'),
-          _row('Handled by', visit.staffName ?? '—'),
+          _row('Date & Time', visit.visitDate != null ? Formatters.dateTime(visit.visitDate) : '-'),
+          _row('Patient', visit.patientName ?? '-'),
+          _row('Handled by', visit.staffName ?? '-'),
           if (visit.vitals != null && visit.vitals!.trim().isNotEmpty) _row('Vitals', visit.vitals!),
           if (visit.assessment != null && visit.assessment!.trim().isNotEmpty) _row('Assessment', visit.assessment!),
           if (visit.treatment != null && visit.treatment!.trim().isNotEmpty) _row('Treatment', visit.treatment!),

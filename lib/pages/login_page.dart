@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../core/utils/audit_helper.dart';
+
 /// Login page — uses Supabase Auth (email/password).
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,6 +38,10 @@ class _LoginPageState extends State<LoginPage> {
       await Supabase.instance.client.auth.signInWithPassword(
         email: email,
         password: password,
+      );
+      await AuditHelper.log(
+        action: 'User logged in',
+        module: 'AUTH',
       );
       // AuthGate will switch to AppShell automatically.
     } on AuthException catch (e) {

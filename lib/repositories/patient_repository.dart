@@ -3,6 +3,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/services/supabase_service.dart';
+import '../core/utils/audit_helper.dart';
 import '../models/patient.dart';
 
 class PatientRepository {
@@ -34,6 +35,11 @@ class PatientRepository {
       ..remove('deleted_at');
 
     await _service.insert('patients', payload);
+    await AuditHelper.log(
+      action: 'Created patient',
+      module: 'PATIENTS',
+      referenceId: patient.id.isEmpty ? null : patient.id,
+    );
   }
 
   Future<void> updatePatient(Patient patient) async {

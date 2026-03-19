@@ -223,16 +223,16 @@ final List<MockTransaction> mockTransactions = [
 ];
 
 final List<MockActivity> mockDashboardActivity = [
-  MockActivity(id: 'a1', description: 'Juan Dela Cruz — Visit (Fever, cough)', time: DateTime.now(), type: 'visit'),
-  MockActivity(id: 'a2', description: 'Health certificate released — Maria Santos', time: DateTime.now().subtract(const Duration(hours: 2)), type: 'certificate'),
-  MockActivity(id: 'a3', description: 'Referral created — Juan Dela Cruz to QMH', time: DateTime.now().subtract(const Duration(days: 1)), type: 'referral'),
-  MockActivity(id: 'a4', description: 'Stock received — Cotton Balls +50', time: DateTime.now().subtract(const Duration(days: 1)), type: 'inventory'),
+  MockActivity(id: 'a1', description: 'Juan Dela Cruz - Visit (Fever, cough)', time: DateTime.now(), type: 'visit'),
+  MockActivity(id: 'a2', description: 'Health certificate released - Maria Santos', time: DateTime.now().subtract(const Duration(hours: 2)), type: 'certificate'),
+  MockActivity(id: 'a3', description: 'Referral created - Juan Dela Cruz to QMH', time: DateTime.now().subtract(const Duration(days: 1)), type: 'referral'),
+  MockActivity(id: 'a4', description: 'Stock received - Cotton Balls +50', time: DateTime.now().subtract(const Duration(days: 1)), type: 'inventory'),
 ];
 
 final List<MockAlert> mockDashboardAlerts = [
   MockAlert(id: 'al1', title: 'Low stock', message: 'Paracetamol 500mg (45 left, threshold 50)', severity: 'medium'),
   MockAlert(id: 'al2', title: 'Near expiry (30 days)', message: 'Betadine batch B2024-002', severity: 'high'),
-  MockAlert(id: 'al3', title: 'Follow-up due', message: 'Juan Dela Cruz — referral follow-up 2025-03-01', severity: 'medium'),
+  MockAlert(id: 'al3', title: 'Follow-up due', message: 'Juan Dela Cruz - referral follow-up 2025-03-01', severity: 'medium'),
 ];
 
 final List<MockUser> mockUsers = [

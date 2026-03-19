@@ -164,17 +164,17 @@ class _PatientsPageState extends State<PatientsPage> {
                               cellBuilder: (row, key) {
                                 switch (key) {
                                   case 'schoolId':
-                                    return Text(row.studentId ?? '—');
+                                    return Text(row.studentId ?? '-');
                                   case 'name':
                                     return Text(row.fullName);
                                   case 'type':
-                                    return Text(row.type ?? '—');
+                                    return Text(row.type ?? '-');
                                   case 'department':
-                                    return Text(row.department ?? '—');
+                                    return Text(row.department ?? '-');
                                   case 'lastVisit':
                                     final lastVisit = _latestVisits[row.id];
                                     return Text(
-                                      lastVisit != null ? Formatters.date(lastVisit) : '—',
+                                      lastVisit != null ? Formatters.date(lastVisit) : '-',
                                     );
                                   default:
                                     return const SizedBox.shrink();

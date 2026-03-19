@@ -133,11 +133,11 @@ class _CertificatesPageState extends State<CertificatesPage> {
                                   case 'patient':
                                     return Text((row.patientName ?? 'Unknown').trim().isEmpty ? 'Unknown' : row.patientName!);
                                   case 'purpose':
-                                    return Text(row.purpose ?? '—');
+                                    return Text(row.purpose ?? '-');
                                   case 'status':
                                     return Text(row.status ?? 'Pending');
                                   case 'releasedDate':
-                                    return Text(row.releasedDate != null ? Formatters.date(row.releasedDate!) : '—');
+                                    return Text(row.releasedDate != null ? Formatters.date(row.releasedDate!) : '-');
                                   default:
                                     return const SizedBox.shrink();
                                 }

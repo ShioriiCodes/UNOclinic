@@ -342,8 +342,8 @@ class PatientDrawer extends StatelessWidget {
 
   void _showCreateReferralDialog(BuildContext context) {
     final repo = ReferralRepository();
-    final referredTo = TextEditingController();
-    final reason = TextEditingController();
+    String referredTo = '';
+    String reason = '';
     bool saving = false;
 
     showDialog(
@@ -357,12 +357,12 @@ class PatientDrawer extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: referredTo,
+                  onChanged: (v) => referredTo = v,
                   decoration: const InputDecoration(labelText: 'Referred To'),
                 ),
                 const SizedBox(height: 12),
                 TextField(
-                  controller: reason,
+                  onChanged: (v) => reason = v,
                   decoration: const InputDecoration(labelText: 'Reason'),
                 ),
               ],
@@ -380,8 +380,8 @@ class PatientDrawer extends StatelessWidget {
                           Referral(
                             id: '',
                             patientId: patient.id,
-                            referredTo: referredTo.text.trim().isEmpty ? null : referredTo.text.trim(),
-                            reason: reason.text.trim().isEmpty ? null : reason.text.trim(),
+                            referredTo: referredTo.trim().isEmpty ? null : referredTo.trim(),
+                            reason: reason.trim().isEmpty ? null : reason.trim(),
                             status: 'Pending',
                           ),
                         );
@@ -390,10 +390,10 @@ class PatientDrawer extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Referral created.')),
                         );
-                      } catch (_) {
+                      } catch (e) {
                         if (ctx.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Failed to create referral.')),
+                            SnackBar(content: Text('Failed to create referral: $e')),
                           );
                         }
                       } finally {
@@ -407,10 +407,7 @@ class PatientDrawer extends StatelessWidget {
           ],
         ),
       ),
-    ).then((_) {
-      referredTo.dispose();
-      reason.dispose();
-    });
+    );
   }
 }
 
@@ -426,12 +423,12 @@ class _ProfileTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _row('School ID', patient.studentId ?? '—'),
-          _row('Type', patient.type ?? '—'),
-          _row('Department', patient.department ?? '—'),
-          _row('Birth date', patient.birthDate != null ? Formatters.date(patient.birthDate) : '—'),
-          _row('Contact number', patient.contactNumber ?? '—'),
-          _row('Address', patient.address ?? '—'),
+          _row('School ID', patient.studentId ?? '-'),
+          _row('Type', patient.type ?? '-'),
+          _row('Department', patient.department ?? '-'),
+          _row('Birth date', patient.birthDate != null ? Formatters.date(patient.birthDate) : '-'),
+          _row('Contact number', patient.contactNumber ?? '-'),
+          _row('Address', patient.address ?? '-'),
         ],
       ),
     );

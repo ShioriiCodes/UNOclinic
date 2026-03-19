@@ -31,7 +31,7 @@ class Patient {
     final a = (firstName ?? '').trim();
     final b = (lastName ?? '').trim();
     final name = ('$a $b').trim();
-    return name.isEmpty ? '—' : name;
+    return name.isEmpty ? '-' : name;
   }
 
   Patient copyWith({

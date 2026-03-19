@@ -8,12 +8,14 @@ class Sidebar extends StatelessWidget {
     required this.onSelect,
     required this.collapsed,
     required this.onToggleCollapse,
+    this.versionLabel,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onSelect;
   final bool collapsed;
   final VoidCallback onToggleCollapse;
+  final String? versionLabel;
 
   static const List<_NavItem> _items = [
     _NavItem(Icons.dashboard_rounded, 'Dashboard'),
@@ -123,6 +125,34 @@ class Sidebar extends StatelessWidget {
                 },
               ),
             ),
+            if ((versionLabel ?? '').trim().isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: collapsed ? 8 : 16,
+                  vertical: 8,
+                ),
+                child: collapsed
+                    ? Tooltip(
+                        message: versionLabel!,
+                        preferBelow: false,
+                        child: Icon(
+                          Icons.info_outline_rounded,
+                          size: 16,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    : Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          versionLabel!,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+              ),
+            ],
           ],
         ),
       ),

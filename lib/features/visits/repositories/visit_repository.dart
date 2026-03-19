@@ -2,6 +2,8 @@
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/utils/audit_helper.dart';
+
 class VisitRepository {
   final SupabaseClient client = Supabase.instance.client;
 
@@ -42,6 +44,14 @@ class VisitRepository {
     payload['staff_id'] = userId;
 
     final res = await client.from('visits').insert(payload).select();
+    final createdRows = List<Map<String, dynamic>>.from(res as List<dynamic>);
+    final createdId = (createdRows.isNotEmpty ? createdRows.first['id'] : null)
+        ?.toString();
+    await AuditHelper.log(
+      action: 'Created visit',
+      module: 'VISITS',
+      referenceId: createdId,
+    );
     print('VISIT CREATED: $res');
   }
 

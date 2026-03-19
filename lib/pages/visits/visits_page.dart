@@ -54,7 +54,7 @@ class _VisitsPageState extends State<VisitsPage> {
   List<Visit> get _filtered {
     var list = _visits;
     if (_handledBy != 'All') {
-      list = list.where((v) => (v.staffName ?? '—') == _handledBy).toList();
+      list = list.where((v) => (v.staffName ?? '-') == _handledBy).toList();
     }
     if (_search.isNotEmpty) {
       final q = _search.toLowerCase();
@@ -154,13 +154,13 @@ class _VisitsPageState extends State<VisitsPage> {
                               cellBuilder: (row, key) {
                                 switch (key) {
                                   case 'date':
-                                    return Text(row.visitDate != null ? Formatters.dateTime(row.visitDate) : '—');
+                                    return Text(row.visitDate != null ? Formatters.dateTime(row.visitDate) : '-');
                                   case 'patient':
-                                    return Text(row.patientName ?? '—');
+                                    return Text(row.patientName ?? '-');
                                   case 'complaint':
-                                    return Text(row.notes ?? row.assessment ?? '—');
+                                    return Text(row.notes ?? row.assessment ?? '-');
                                   case 'handledBy':
-                                    return Text(row.staffName ?? '—');
+                                    return Text(row.staffName ?? '-');
                                   default:
                                     return const SizedBox.shrink();
                                 }

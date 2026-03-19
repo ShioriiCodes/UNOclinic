@@ -25,7 +25,7 @@ class CertificateDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusUpper = (certificate.status ?? '').toUpperCase();
     return DetailsDrawer(
-      title: 'Certificate — ${certificate.patientName ?? 'Unknown'}',
+      title: 'Certificate - ${certificate.patientName ?? 'Unknown'}',
       onClose: onClose,
       actions: [
         OutlinedButton.icon(
@@ -63,7 +63,7 @@ class CertificateDrawer extends StatelessWidget {
         children: [
           _row('Request date', Formatters.date(certificate.requestDate)),
           _row('Patient', certificate.patientName ?? 'Unknown'),
-          _row('Purpose', certificate.purpose ?? '—'),
+          _row('Purpose', certificate.purpose ?? '-'),
           _row('Status', certificate.status ?? 'Pending'),
           if (certificate.releasedDate != null)
             _row('Released date', Formatters.date(certificate.releasedDate!)),

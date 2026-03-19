@@ -40,7 +40,7 @@ class ItemDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _row('Category', item.category ?? '—'),
+          _row('Category', item.category ?? '-'),
           _row('Total stock', '${item.totalStock ?? 0}'),
           _row('Threshold', '${item.threshold ?? 0}'),
           _row('Status', (item.totalStock ?? 0) <= (item.threshold ?? 0) ? 'Low stock' : 'OK'),
@@ -78,7 +78,7 @@ class BatchDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsDrawer(
-      title: 'Batch ${batch.batchNo ?? '—'}',
+      title: 'Batch ${batch.batchNo ?? '-'}',
       onClose: onClose,
       actions: [
         FilledButton.icon(
@@ -101,10 +101,10 @@ class BatchDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _row('Item', batch.itemName ?? 'Unknown'),
-          _row('Batch no', batch.batchNo ?? '—'),
+          _row('Batch no', batch.batchNo ?? '-'),
           _row('Expiry date', Formatters.date(batch.expiryDate)),
           _row('Qty available', '${batch.qtyAvailable ?? 0}'),
-          _row('Status', batch.status ?? '—'),
+          _row('Status', batch.status ?? '-'),
         ],
       ),
     );

@@ -3,6 +3,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/services/supabase_service.dart';
+import '../core/utils/audit_helper.dart';
 import '../models/visit.dart';
 
 class VisitRepository {
@@ -48,6 +49,11 @@ class VisitRepository {
       ..['staff_id'] = userId;
 
     await _service.insert('visits', payload);
+    await AuditHelper.log(
+      action: 'Created visit',
+      module: 'VISITS',
+      referenceId: visit.patientId,
+    );
   }
 
   Future<void> updateVisit(Visit visit) async {

@@ -83,6 +83,15 @@ class _ReferralsPageState extends State<ReferralsPage> {
     );
   }
 
+  Future<void> _deleteReferral(String id) async {
+    await _repo.deleteReferral(id);
+    await loadReferrals();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Referral deleted.')),
+    );
+  }
+
   List<Map<String, dynamic>> get _filtered {
     var list = referrals;
     if (_statusFilter != 'All') {
@@ -93,9 +102,9 @@ class _ReferralsPageState extends State<ReferralsPage> {
     }
     if (_followUpDueOnly) {
       list = list.where((r) {
-        final followUpDue = (r['follow_up_due'] ?? '').toString().trim();
+        final followUpNotes = (r['follow_up_notes'] ?? '').toString().trim();
         final status = (r['status'] ?? '').toString().toUpperCase();
-        return followUpDue.isNotEmpty && status == 'PENDING';
+        return followUpNotes.isNotEmpty && status == 'PENDING';
       }).toList();
     }
     return list;
@@ -178,15 +187,15 @@ class _ReferralsPageState extends State<ReferralsPage> {
                                   switch (key) {
                                     case 'date':
                                       final date = _parseDate(ref['referral_date']);
-                                      return Text(date == null ? '—' : Formatters.date(date));
+                                      return Text(date == null ? '-' : Formatters.date(date));
                                     case 'patient':
                                       return Text(getPatientName(patient));
                                     case 'referredTo':
-                                      return Text((ref['referred_to'] ?? '—').toString());
+                                      return Text((ref['referred_to'] ?? '-').toString());
                                     case 'reason':
-                                      return Text((ref['reason'] ?? '—').toString());
+                                      return Text((ref['reason'] ?? '-').toString());
                                     case 'followUp':
-                                      return Text((ref['follow_up_due'] ?? '—').toString());
+                                      return Text((ref['follow_up_notes'] ?? '-').toString());
                                     case 'status':
                                       return Text((ref['status'] ?? 'PENDING').toString());
                                     default:
@@ -206,6 +215,12 @@ class _ReferralsPageState extends State<ReferralsPage> {
                                       final id = (ref['id'] ?? '').toString();
                                       if (id.isEmpty) return;
                                       await _saveNotes(id, notes);
+                                    },
+                                    onDelete: () async {
+                                      final id = (ref['id'] ?? '').toString();
+                                      if (id.isEmpty) return;
+                                      await _deleteReferral(id);
+                                      widget.onOpenDrawer(null);
                                     },
                                   ),
                                 ),

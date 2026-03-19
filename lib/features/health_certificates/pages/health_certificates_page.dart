@@ -184,16 +184,24 @@ class _HealthCertificatesPageState extends State<HealthCertificatesPage> {
                                       final requestDate = _parseDate(
                                         cert['request_date'] ?? cert['created_at'],
                                       );
-                                      return Text(requestDate != null ? Formatters.date(requestDate) : '—');
+                                      return Text(requestDate != null ? Formatters.date(requestDate) : '-');
                                     case 'patient':
                                       return Text(getPatientName(patient));
                                     case 'purpose':
-                                      return Text((cert['purpose'] ?? '—').toString());
+                                      return Text((cert['purpose'] ?? '-').toString());
                                     case 'status':
                                       return Text((cert['status'] ?? 'PENDING').toString());
                                     case 'releasedDate':
                                       final releasedDate = _parseDate(cert['released_date']);
-                                      return Text(releasedDate != null ? Formatters.date(releasedDate) : '—');
+                                      final status = (cert['status'] ?? '').toString().toUpperCase();
+                                      final fallback = status == 'RELEASED'
+                                          ? _parseDate(cert['updated_at'])
+                                          : null;
+                                      return Text(
+                                        releasedDate != null || fallback != null
+                                            ? Formatters.date(releasedDate ?? fallback)
+                                            : '-',
+                                      );
                                     default:
                                       return const SizedBox.shrink();
                                   }

@@ -2,6 +2,8 @@
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/utils/audit_helper.dart';
+
 class CertificateRepository {
   final SupabaseClient client = Supabase.instance.client;
 
@@ -11,6 +13,7 @@ class CertificateRepository {
         .select('''
 id,
 created_at,
+updated_at,
 status,
 request_date,
 released_date,
@@ -64,15 +67,18 @@ patients(first_name, last_name)
     };
 
     final res = await client.from('health_certificates').update(updateData).eq('id', id);
+    if (normalizedStatus == 'RELEASED') {
+      await AuditHelper.log(
+        action: 'Released certificate',
+        module: 'CERTIFICATES',
+        referenceId: id,
+      );
+    }
     print('STATUS UPDATED: $res');
   }
 
   Future<void> deleteCertificate(String id) async {
-    final now = DateTime.now().toIso8601String();
-    final res = await client
-        .from('health_certificates')
-        .update({'deleted_at': now, 'updated_at': now})
-        .eq('id', id);
+    final res = await client.from('health_certificates').delete().eq('id', id);
     print('CERTIFICATE DELETED: $res');
   }
 }

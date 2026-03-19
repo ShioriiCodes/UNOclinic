@@ -1,17 +1,35 @@
-# uno_clinic
+# UNOclinic - PSU Quezon Campus Clinic Management System
 
-A new Flutter project.
+UNOclinic is a Flutter Desktop clinic management system built for PSU Quezon Campus.  
+It helps organize clinic operations by connecting a finalized desktop UI to Supabase for
+authentication, real-time records, and persistent health data.
 
-## Getting Started
+## Core Modules
 
-This project is a starting point for a Flutter application.
+- Dashboard (KPIs, recent activity, alerts)
+- Patients management
+- Visits management
+- Health certificates
+- Referrals
+- Inventory (items, batches, transactions, alerts)
+- Reports (with CSV/PDF export)
+- Settings (user management, audit logs, clinic info)
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter Desktop (Windows-first)
+- Supabase (Auth + Postgres)
+- Clean flow: UI -> Repository -> Supabase
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Current Status
+
+- Frontend layout is finalized and responsive up to tablet size
+- Modules are connected to real Supabase data
+- Audit logging and report export are implemented
+
+## Run Locally
+
+```bash
+flutter pub get
+flutter run -d windows
+```

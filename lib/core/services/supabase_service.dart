@@ -68,14 +68,8 @@ class SupabaseService {
   }
 
   Future<void> delete(String table, String id) async {
-    final now = DateTime.now().toIso8601String();
-    final payload = <String, dynamic>{
-      'deleted_at': now,
-      'updated_at': now,
-    };
-    print('QUERY -> SOFT DELETE table: $table id: $id');
-    print('PAYLOAD -> $payload');
-    final response = await _client.from(table).update(payload).eq('id', id).select();
+    print('QUERY -> HARD DELETE table: $table id: $id');
+    final response = await _client.from(table).delete().eq('id', id).select();
     print('RESULT -> $response');
     print('DATA FETCHED: $response');
   }

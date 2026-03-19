@@ -2,6 +2,8 @@
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/utils/audit_helper.dart';
+
 class PatientRepository {
   final SupabaseClient client = Supabase.instance.client;
 
@@ -20,6 +22,14 @@ class PatientRepository {
   // CREATE PATIENT
   Future<void> createPatient(Map<String, dynamic> patient) async {
     final res = await client.from('patients').insert(patient).select();
+    final createdRows = List<Map<String, dynamic>>.from(res as List<dynamic>);
+    final createdId = (createdRows.isNotEmpty ? createdRows.first['id'] : null)
+        ?.toString();
+    await AuditHelper.log(
+      action: 'Created patient',
+      module: 'PATIENTS',
+      referenceId: createdId,
+    );
     print('PATIENT CREATED: $res');
   }
 

@@ -165,7 +165,7 @@ class _ReportsPageState extends State<ReportsPage> {
                       ),
                       child: const Center(
                         child: Text(
-                          'Report viewer placeholder — select filters and export to generate.',
+                          'Report viewer placeholder - select filters and export to generate.',
                           style: TextStyle(color: Colors.grey),
                           textAlign: TextAlign.center,
                         ),

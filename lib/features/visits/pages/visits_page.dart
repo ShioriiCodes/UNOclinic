@@ -227,11 +227,11 @@ class _VisitsPageState extends State<VisitsPage> {
                                   switch (key) {
                                     case 'date':
                                       final dt = _parseDateTime(visit['visit_date']);
-                                      return Text(dt == null ? '—' : Formatters.dateTime(dt));
+                                      return Text(dt == null ? '-' : Formatters.dateTime(dt));
                                     case 'patient':
                                       return Text(getPatientName(patientMap));
                                     case 'complaint':
-                                      return Text((visit['notes'] ?? '—').toString());
+                                      return Text((visit['notes'] ?? '-').toString());
                                     case 'handledBy':
                                       return Text(_getStaffName(visit['profiles']));
                                     default:

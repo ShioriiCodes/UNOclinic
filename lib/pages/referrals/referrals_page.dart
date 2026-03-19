@@ -132,11 +132,11 @@ class _ReferralsPageState extends State<ReferralsPage> {
                                   case 'patient':
                                     return Text((row.patientName ?? 'Unknown').trim().isEmpty ? 'Unknown' : row.patientName!);
                                   case 'referredTo':
-                                    return Text(row.referredTo ?? '—');
+                                    return Text(row.referredTo ?? '-');
                                   case 'reason':
-                                    return Text(row.reason ?? '—');
+                                    return Text(row.reason ?? '-');
                                   case 'followUp':
-                                    return Text(row.followUpDue ?? '—');
+                                    return Text(row.followUpDue ?? '-');
                                   case 'status':
                                     return Text(row.status ?? 'Pending');
                                   default:

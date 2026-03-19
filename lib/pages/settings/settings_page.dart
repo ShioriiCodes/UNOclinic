@@ -119,11 +119,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         cellBuilder: (row, key) {
                           switch (key) {
                             case 'name':
-                              return Text((row['full_name'] ?? '—').toString());
+                              return Text((row['full_name'] ?? '-').toString());
                             case 'email':
-                              return Text((row['email'] ?? '—').toString());
+                              return Text((row['email'] ?? '-').toString());
                             case 'role':
-                              return Text((row['role'] ?? '—').toString());
+                              return Text((row['role'] ?? '-').toString());
                             default:
                               return const SizedBox.shrink();
                           }
@@ -171,7 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 final e = mockAuditLog[i];
                 return ListTile(
                   title: Text(e.action),
-                  subtitle: Text('${e.user} — ${Formatters.dateTime(e.time)}'),
+                  subtitle: Text('${e.user} - ${Formatters.dateTime(e.time)}'),
                 );
               },
             ),

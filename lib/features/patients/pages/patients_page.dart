@@ -218,22 +218,22 @@ class _PatientsPageState extends State<PatientsPage> {
                               switch (key) {
                                 case 'schoolId':
                                   return Text(
-                                    (row['student_id'] ?? '—').toString(),
+                                    (row['student_id'] ?? '-').toString(),
                                   );
                                 case 'name':
                                   return Text(_fullNameFromRow(row));
                                 case 'type':
-                                  return Text((row['type'] ?? '—').toString());
+                                  return Text((row['type'] ?? '-').toString());
                                 case 'department':
                                   return Text(
-                                    (row['department'] ?? '—').toString(),
+                                    (row['department'] ?? '-').toString(),
                                   );
                                 case 'lastVisit':
                                   final dt =
                                       latestVisits[(row['id'] ?? '')
                                           .toString()];
                                   return Text(
-                                    dt == null ? '—' : Formatters.date(dt),
+                                    dt == null ? '-' : Formatters.date(dt),
                                   );
                                 default:
                                   return const SizedBox.shrink();

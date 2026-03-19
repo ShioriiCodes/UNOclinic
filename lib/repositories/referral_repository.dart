@@ -3,6 +3,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/services/supabase_service.dart';
+import '../core/utils/audit_helper.dart';
 import '../models/referral.dart';
 import '../utils/patient_name.dart';
 
@@ -45,16 +46,33 @@ class ReferralRepository {
   }
 
   Future<void> createReferral(Referral referral) async {
-    final payload = Map<String, dynamic>.from(referral.toMap())
-      ..remove('id')
-      ..remove('referral_date');
+    final payload = <String, dynamic>{
+      'patient_id': referral.patientId,
+      'referred_to': referral.referredTo,
+      'reason': referral.reason,
+      'status': (referral.status ?? 'PENDING').toUpperCase(),
+      'follow_up_notes': referral.followUpNotes,
+      'referral_date':
+          (referral.referralDate ?? DateTime.now()).toIso8601String(),
+    };
     await _service.insert('referrals', payload);
+    await AuditHelper.log(
+      action: 'Created referral',
+      module: 'REFERRALS',
+      referenceId: referral.patientId,
+    );
   }
 
   Future<void> updateReferral(Referral referral) async {
-    final payload = Map<String, dynamic>.from(referral.toMap())
-      ..remove('id')
-      ..['updated_at'] = DateTime.now().toIso8601String();
+    final payload = <String, dynamic>{
+      'patient_id': referral.patientId,
+      'referred_to': referral.referredTo,
+      'reason': referral.reason,
+      'status': referral.status,
+      'follow_up_notes': referral.followUpNotes,
+      'referral_date': referral.referralDate?.toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
+    };
     await _service.update('referrals', payload, referral.id);
   }
 
