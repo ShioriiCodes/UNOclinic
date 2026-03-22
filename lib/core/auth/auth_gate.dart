@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../pages/login_page.dart';
+import '../../features/auth/ui/login_page.dart';
 import '../../shell/app_shell.dart';
 import '../../models/user_profile.dart';
 import '../../repositories/profile_repository.dart';

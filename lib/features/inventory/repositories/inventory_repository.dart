@@ -172,9 +172,113 @@ inventory_items(name)
     print('STOCK RECEIVED: $quantity');
   }
 
+  Future<int> getTotalStock(String itemId) async {
+    final id = itemId.trim();
+    if (id.isEmpty) return 0;
+
+    final rows = await client
+        .from('inventory_batches')
+        .select('quantity')
+        .eq('item_id', id)
+        .isFilter('deleted_at', null);
+
+    final batches = List<Map<String, dynamic>>.from(
+      (rows as List<dynamic>).map((e) => (e as Map).cast<String, dynamic>()),
+    );
+
+    return batches.fold<int>(0, (sum, b) => sum + _asInt(b['quantity']));
+  }
+
+  Future<void> dispenseItemFIFO({
+    required String itemId,
+    required int quantity,
+  }) async {
+    final id = itemId.trim();
+    if (id.isEmpty) {
+      throw Exception('Invalid item.');
+    }
+    if (quantity <= 0) {
+      throw Exception('Quantity must be greater than zero.');
+    }
+
+    final userId = client.auth.currentUser?.id;
+    if (userId == null || userId.isEmpty) {
+      throw const AuthException('User not authenticated.');
+    }
+
+    final rows = await client
+        .from('inventory_batches')
+        .select('id,item_id,quantity,expiry_date')
+        .eq('item_id', id)
+        .isFilter('deleted_at', null)
+        .gt('quantity', 0);
+
+    final batches = List<Map<String, dynamic>>.from(
+      (rows as List<dynamic>).map((e) => (e as Map).cast<String, dynamic>()),
+    );
+
+    if (batches.isEmpty) {
+      throw Exception('No available stock batches found.');
+    }
+
+    // FIFO by earliest expiry date first.
+    batches.sort((a, b) {
+      final aDate = _parseDate(a['expiry_date']) ?? DateTime(9999, 12, 31);
+      final bDate = _parseDate(b['expiry_date']) ?? DateTime(9999, 12, 31);
+      return aDate.compareTo(bDate);
+    });
+
+    final totalStock = batches.fold<int>(0, (sum, b) => sum + _asInt(b['quantity']));
+    if (totalStock < quantity) {
+      throw Exception('Insufficient stock. Available: $totalStock, requested: $quantity.');
+    }
+
+    var remaining = quantity;
+    for (final batch in batches) {
+      if (remaining <= 0) break;
+
+      final batchId = (batch['id'] ?? '').toString();
+      if (batchId.isEmpty) continue;
+
+      final currentQty = _asInt(batch['quantity']);
+      if (currentQty <= 0) continue;
+
+      final deductQty = remaining > currentQty ? currentQty : remaining;
+      final newQty = currentQty - deductQty;
+
+      await client
+          .from('inventory_batches')
+          .update({'quantity': newQty})
+          .eq('id', batchId);
+
+      await client.from('inventory_transactions').insert({
+        'item_id': id,
+        'batch_id': batchId,
+        'type': 'OUT',
+        'quantity': deductQty,
+        'created_by': userId,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+      remaining -= deductQty;
+    }
+
+    if (remaining > 0) {
+      throw Exception('Dispense failed. Remaining quantity: $remaining.');
+    }
+  }
+
   int _asInt(dynamic value) {
     if (value is int) return value;
     return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  DateTime? _parseDate(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    final raw = value.toString();
+    if (raw.isEmpty) return null;
+    return DateTime.tryParse(raw);
   }
 
   String _dateOnly(DateTime d) {

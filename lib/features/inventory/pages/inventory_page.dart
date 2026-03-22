@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/role_helper.dart';
 import '../../../utils/breakpoints.dart';
 import '../../../widgets/app_table.dart';
 import '../../../widgets/section_card.dart';
@@ -71,6 +72,45 @@ class _InventoryPageState extends State<InventoryPage>
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to receive stock: $e')),
+      );
+    }
+  }
+
+  Future<void> dispenseStockAction(
+    String itemId,
+    int quantity,
+  ) async {
+    try {
+      final isAdmin = await RoleHelper.isAdmin();
+      if (!isAdmin) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Only ADMIN can dispense items.')),
+        );
+        return;
+      }
+
+      final available = await _repo.getTotalStock(itemId);
+      if (available < quantity) {
+        throw Exception('Insufficient stock. Available: $available, requested: $quantity.');
+      }
+
+      await _repo.dispenseItemFIFO(itemId: itemId, quantity: quantity);
+
+      await loadItems();
+      await loadBatches();
+      await loadTransactions();
+      await loadAlerts();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Item dispensed using FIFO.')),
+      );
+    } catch (e) {
+      print('ERROR: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to dispense item: $e')),
       );
     }
   }
@@ -211,11 +251,11 @@ class _InventoryPageState extends State<InventoryPage>
             return const SizedBox.shrink();
         }
       },
-      onRowTap: (item) => _showReceiveStockDialog(item),
+      onRowTap: (item) => _showStockDialog(item),
     );
   }
 
-  void _showReceiveStockDialog(Map<String, dynamic> item) {
+  void _showStockDialog(Map<String, dynamic> item) {
     final itemId = (item['id'] ?? '').toString();
     if (itemId.isEmpty) return;
 
@@ -227,7 +267,7 @@ class _InventoryPageState extends State<InventoryPage>
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setLocal) => AlertDialog(
-          title: const Text('Receive Stock'),
+          title: const Text('Manage Stock'),
           content: SizedBox(
             width: 420,
             child: Column(
@@ -274,6 +314,25 @@ class _InventoryPageState extends State<InventoryPage>
             TextButton(
               onPressed: saving ? null : () => Navigator.pop(ctx),
               child: const Text('Cancel'),
+            ),
+            OutlinedButton(
+              onPressed: saving
+                  ? null
+                  : () async {
+                      final quantity = int.tryParse(qtyController.text.trim());
+                      if (quantity == null || quantity <= 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Quantity must be a valid integer.')),
+                        );
+                        return;
+                      }
+
+                      setLocal(() => saving = true);
+                      await dispenseStockAction(itemId, quantity);
+                      if (!ctx.mounted) return;
+                      Navigator.pop(ctx);
+                    },
+              child: const Text('Dispense'),
             ),
             FilledButton(
               onPressed: saving
